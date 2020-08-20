@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, request
+from flask import Flask, render_template, url_for, flash, request, redirect
 import requests
 from forms import SearchForm
 from bs4 import BeautifulSoup
@@ -14,37 +14,32 @@ headers = {
 }
 
 
-default_site = "https://unsplash.com/s/photos/web"
+app.config['SECRET_KEY'] = 'my_key'
 
 
-def get_src_tag(response):
-    soup = BeautifulSoup(response.content, "html5lib")
-    
+def get_src_tag_list(response):
+    soup = BeautifulSoup(response.text, 'html5lib')
+    return soup.findAll('img')
 
 
 def web_request(website):
-    try:
-        req = requests.get(website, headers=headers)
-        req.raise_for_status()
-    except HTTPError:
-        return []
-    
-    return get_src_tag(req)
+    req = requests.get(url=website, headers=headers)
+    return get_src_tag_list(req)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = SearchForm()
-    if form.validate_on_submit() and web_request(form.website.data):
-            return redirect(url_for("pics.html", src=src))
-        
+    if form.validate_on_submit():
+        img_list = web_request(form.website.data)
+        return redirect(url_for("picture", img_list=img_list))
     return render_template("index.html", form=form)
 
 
-@app.route('/pictures')
-def pictures():
-    
-    return render_template("pics.html")
+@app.route('/picture', methods=['GET', 'POST'])
+def picture():
+    img_list = request.args.get('img_list')
+    return render_template("pics.html", img_list=img_list)
 
 
 if __name__ == '__main__':
