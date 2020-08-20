@@ -1,20 +1,33 @@
 from bs4 import BeautifulSoup
 import requests
 
-headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Max-Age': '3600',
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
-}
+class Scraper():
 
-def get_img_tag_list(response):
-    soup = BeautifulSoup(response.text, 'html5lib')
-    return soup.findAll('img')
+    def __init__(self, url=''):
+        self.url = url
+        self.headers = {
+            'pragma': 'no-cache',
+            'cache-control': 'no-cache',
+            'dnt': '1',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'sec-fetch-site': 'none',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-dest': 'document',
+            'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+        }
 
+    def get_request(self):
+        req = requests.get(self.url, headers=self.headers)
+        print(req.text)
+        return req
 
-def web_request(website):
-    req = requests.get(url=website, headers=headers)
-    return get_img_tag_list(req)
-
+    def get_image_src_list(self):
+        soup = BeautifulSoup((self.get_request()).text, "html5lib")
+        image_tags = soup.find_all('img')
+        image_src_list = []
+        for image_tag in image_tags:
+            image_src_list.append(image_tag.get('src'))
+        print(image_src_list)
+        return image_src_list
