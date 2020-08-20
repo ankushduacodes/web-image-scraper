@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for image_src in image_src_list%}
-        <img src="{{image_src}}" alt="image">
-    {% endfor %}
+    {% if not image_src_list %}
+        <h1>Sorry!.. No pictures were found or a captcha was served</h1>
+    {% else %}
+        {% for image_src in image_src_list%}
+            <img src="{{image_src}}" alt="image">
+        {% endfor %}
+    {% endif %}
 {% endblock %}

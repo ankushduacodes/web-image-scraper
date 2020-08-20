@@ -22,7 +22,6 @@ class Scraper():
         """Places get request at url filled in the form
         """
         req = requests.get(self.url, headers=self.headers)
-        print(req.text)
         return req
 
     def get_image_src_list(self):
@@ -34,5 +33,4 @@ class Scraper():
         image_src_list = []
         for image_tag in image_tags:
             image_src_list.append(image_tag.get('src'))
-        print(image_src_list)
         return image_src_list
