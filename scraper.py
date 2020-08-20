@@ -17,14 +17,14 @@ headers = {
 app.config['SECRET_KEY'] = 'my_key'
 
 
-def get_src_tag_list(response):
+def get_img_tag_list(response):
     soup = BeautifulSoup(response.text, 'html5lib')
     return soup.findAll('img')
 
 
 def web_request(website):
     req = requests.get(url=website, headers=headers)
-    return get_src_tag_list(req)
+    return get_img_tag_list(req)
 
 
 @app.route('/', methods=['GET', 'POST'])
