@@ -19,11 +19,16 @@ class Scraper():
         }
 
     def get_request(self):
+        """Places get request at url filled in the form
+        """
         req = requests.get(self.url, headers=self.headers)
         print(req.text)
         return req
 
     def get_image_src_list(self):
+        """gets image src tags and returns list of tags
+        """
+
         soup = BeautifulSoup((self.get_request()).text, "html5lib")
         image_tags = soup.find_all('img')
         image_src_list = []
